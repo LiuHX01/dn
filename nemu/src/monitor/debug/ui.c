@@ -32,6 +32,28 @@ static int cmd_c(char *args) {
 	return 0;
 }
 
+static int cmd_si(char *args) {
+	char *c = strtok(args, " ");
+	int num = atoi(c);
+	cpu_exec(num);
+	return 0;
+}
+
+static int cmd_info(char *args) {
+	char *c = strtok(args, " ");
+	if (strcmp(c, "r") == 0) {
+		printf("eax: %x\n", cpu.eax);
+		printf("ecx: %x\n", cpu.ecx);
+		printf("edx: %x\n", cpu.edx);
+		printf("ebx: %x\n", cpu.ebx);
+		printf("esp: %x\n", cpu.esp);
+		printf("ebp: %x\n", cpu.ebp);
+		printf("esi: %x\n", cpu.esi);
+		printf("edi: %x\n", cpu.edi);
+	}
+	return 0;
+}
+
 static int cmd_q(char *args) {
 	return -1;
 }
@@ -46,7 +68,8 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
-
+	{ "si", "Single-step", cmd_si},
+	{ "info", "Print registers information", cmd_info}
 	/* TODO: Add more commands */
 
 };
