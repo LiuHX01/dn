@@ -48,7 +48,7 @@ static int cmd_si(char *args) {
 }
 
 static int cmd_info(char *args) {
-	char *c = strtok(NULL, " ");
+	char *c = strtok(args, " ");
 	if (strcmp(c, "r") == 0) {
 		int i = 0;
 		for (i = 0; i < 8; i++) {
