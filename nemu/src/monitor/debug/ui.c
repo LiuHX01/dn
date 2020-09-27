@@ -33,14 +33,23 @@ static int cmd_c(char *args) {
 }
 
 static int cmd_si(char *args) {
-	char *c = strtok(args, " ");
+	strtok(args, " ");
+	char *c = strtok(NULL, " ");
+	if  (c == NULL) {
+		cpu_exec(1);
+		return 0;
+	}
 	int num = atoi(c);
-	cpu_exec(num);
+	int i;
+	for (i = 0; i < num; i++) {
+		cpu_exec(1);
+	}
 	return 0;
 }
 
 static int cmd_info(char *args) {
-	char *c = strtok(args, " ");
+	strtok(args, " ");
+	char *c = strtok(NULL, " ");
 	if (strcmp(c, "r") == 0) {
 		printf("eax: %x\n", cpu.eax);
 		printf("ecx: %x\n", cpu.ecx);
@@ -53,7 +62,11 @@ static int cmd_info(char *args) {
 	}
 	return 0;
 }
-
+/**
+static int cmd_x(char *args) {
+	
+}
+*/
 static int cmd_q(char *args) {
 	return -1;
 }
