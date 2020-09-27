@@ -48,7 +48,6 @@ static int cmd_si(char *args) {
 }
 
 static int cmd_info(char *args) {
-	strtok(args, " ");
 	char *c = strtok(NULL, " ");
 	if (strcmp(c, "r") == 0) {
 		printf("eax: %x\n", cpu.eax);
