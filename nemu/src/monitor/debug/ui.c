@@ -76,8 +76,8 @@ static int cmd_x(char *args) {
 	unsigned int n, ad, i;
 	sscanf(args, "%d %x", &n, &ad);
 	for (i = 0; i < n; i++) {
-		printf("0x%x\taddress:0x%x\n", lnaddr_read(ad, 1), ad);
-		ad++;
+		printf("0x%x\taddress:0x%x\n", lnaddr_read(ad, 4), ad);
+		ad += 4;
 	}
 	printf("\n");
 	return 0;
