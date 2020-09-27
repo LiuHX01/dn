@@ -59,12 +59,9 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-	char *N = strtok(NULL, " ");
-	char *AD = strtok(NULL, " ");
 	int n, ad;
+	sscanf(args, "%d, %x", &n, &ad);
 	int i = 0;
-	sscanf(N, "%d", &n);
-	sscanf(AD, "%x", &ad);
 	printf("0x%x: ", ad);
 	for (i = 0; i < n; i++) {
 		printf("%x ", swaddr_read(ad, 4));
