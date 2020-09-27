@@ -68,7 +68,7 @@ static int cmd_x(char *args) {
 	printf("0x%x: ", ad);
 	for (i = 0; i < n; i++) {
 		printf("%x ", swaddr_read(ad, 4));
-		ad += 4;
+		ad += 8;
 	}
 	printf("\n");
 	return 0;
