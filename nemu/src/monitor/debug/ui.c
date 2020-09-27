@@ -39,8 +39,9 @@ static int cmd_si(char *args) {
 		cpu_exec(1);
 		return 0;
 	}
-	int num = atoi(c);
-	int i;
+	int num;
+	sscanf(c, "%d", &num);
+	int i = 0;
 	for (i = 0; i < num; i++) {
 		cpu_exec(1);
 	}
