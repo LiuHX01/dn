@@ -59,8 +59,8 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-	char *N = strtok(args, " ");
-	char *AD = strtok(args, " ");
+	char *N = strtok(NULL, " ");
+	char *AD = strtok(NULL, " ");
 	int n, ad;
 	int i = 0;
 	sscanf(N, "%d", &n);
