@@ -66,7 +66,7 @@ static int cmd_x(char *args) {
 	sscanf(N, "%d", &n);
 	sscanf(AD, "%x", &ad);
 	printf("0x%x: ", ad);
-	for (i = 0; i < n; i++) {
+	for (i = 1; i < n; i++) {
 		printf("%x ", swaddr_read(ad, 4));
 		ad += 4;
 	}
