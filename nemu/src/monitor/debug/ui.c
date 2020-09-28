@@ -64,9 +64,10 @@ static int cmd_x(char *args) {
 	int len, i, addr;
 	sscanf(arg1,"%d",&len);
 	sscanf(arg2,"%x",&addr);
+	printf("%d, 0x%x", len, addr);
 	printf("0x%x:",addr);
 	for (i = 0; i < len; i++) {
-		printf("%x",swaddr_read(addr,4));
+		printf("%x ",swaddr_read(addr,4));
 		addr += 4;
 	}
 	printf("\n");
