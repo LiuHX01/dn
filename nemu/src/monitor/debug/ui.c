@@ -59,16 +59,16 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-	char *arg1 = strtok(NULL, " ");
-	char *arg2 = strtok(NULL, " ");
+	char *LEN = strtok(NULL, " ");
+	char *ADDR = strtok(NULL, " ");
 	int len, i, addr;
-	sscanf(arg1,"%d",&len);
-	sscanf(arg2,"%x",&addr);
+	sscanf(LEN,"%d",&len);
+	sscanf(ADDR,"%x",&addr);
 	//printf("%d, 0x%x\n", len, addr);
 	printf("0x%x: ",addr);
 	printf("\n");
 	for (i = 0; i < len; i++) {
-		printf("---0x%x: ", addr);
+		//printf("---0x%x: ", addr);
 		printf("0x%08x\n",swaddr_read(addr,4));
 		addr += 4;
 	}
