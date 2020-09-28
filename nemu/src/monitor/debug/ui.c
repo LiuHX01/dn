@@ -59,11 +59,15 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-	unsigned int add, len, i;
-	sscanf(args, "%d 0x%x", &len, &add);
+	char *arg1 = strtok(NULL, " ");
+	char *arg2 = strtok(NULL, " ");
+	int len, i, addr;
+	sscanf(arg1,"%d",&len);
+	sscanf(arg2,"%x",&addr);
+	printf("0x%x:",addr);
 	for (i = 0; i < len; i++) {
-		printf("0x%x\taddress:0x%x\n", swaddr_read(add, 4), add);
-		add += 4;
+		printf("%x",swaddr_read(addr,4));
+		addr += 4;
 	}
 	printf("\n");
 	return 0;
