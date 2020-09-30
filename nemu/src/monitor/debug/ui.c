@@ -40,7 +40,10 @@ static int cmd_si(char *args) {
 	}
 	int num;
 	sscanf(c, "%d", &num);
-	cpu_exec(num);
+	int i = 0;
+	for (i = 0; i < num; i++) {
+		cpu_exec(1);
+	}
 	return 0;
 }
 
