@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ
+	NOTYPE = 256, EQ, DECNUM = 255
 
 	/* TODO: Add more token types */
 
@@ -24,7 +24,13 @@ static struct rule {
 
 	{" +",	NOTYPE},				// spaces
 	{"\\+", '+'},					// plus
-	{"==", EQ}						// equal
+	{"==", EQ},						// equal
+	{"-", '-'},						// sub
+	{"\\*", '*'},					// multiply
+	{"/", '/'},						// division
+	{"\\(", '('},					// left bracket
+	{"\\)", ')'},					// right bracket
+	{"[0-9]+", DECNUM}				// Decimal
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -79,13 +85,22 @@ static bool make_token(char *e) {
 				 */
 
 				switch(rules[i].token_type) {
-					default: panic("please implement me");
+					case NOTYPE: break;
+					// default: panic("please implement me");
+					case '+': case '-': case '*': case '/':  case '(': case ')': case DECNUM:
+						strncpy(tokens[nr_token].str, substr_start, substr_len);
+						tokens[nr_token].type = rules[i].token_type;
+						nr_token++;
+						break;
+					default: break;
 				}
-
 				break;
 			}
 		}
-
+		if (nr_token > 32) {
+			printf("Memory limit exceeded!\n");
+			return false;
+		}
 		if(i == NR_REGEX) {
 			printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
 			return false;
