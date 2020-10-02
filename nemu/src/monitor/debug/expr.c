@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, DECNUM = 255
+	NOTYPE = 256, EQ, DECNUM
 
 	/* TODO: Add more token types */
 
@@ -16,21 +16,22 @@ enum {
 static struct rule {
 	char *regex;
 	int token_type;
+	int priority; // the precedence level of rules
 } rules[] = {
 
 	/* TODO: Add more rules.
 	 * Pay attention to the precedence level of different rules.
 	 */
 
-	{" +",	NOTYPE},				// spaces
-	{"\\+", '+'},					// plus
-	{"==", EQ},						// equal
-	{"-", '-'},						// sub
-	{"\\*", '*'},					// multiply
-	{"/", '/'},						// division
-	{"\\(", '('},					// left bracket
-	{"\\)", ')'},					// right bracket
-	{"[0-9]+", DECNUM}				// Decimal
+	{" +",	NOTYPE, 0},					// spaces
+	{"\\+", '+', 4},					// plus
+	{"==", EQ, 3},						// equal
+	{"-", '-', 4},						// sub
+	{"\\*", '*', 5},					// multiply
+	{"/", '/', 5},						// division
+	{"\\(", '(', 7},					// left bracket
+	{"\\)", ')', 7},					// right bracket
+	{"[0-9]+", DECNUM, 0}				// Decimal
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -57,6 +58,7 @@ void init_regex() {
 typedef struct token {
 	int type;
 	char str[32];
+	int priority;
 } Token;
 
 Token tokens[32];
@@ -86,20 +88,15 @@ static bool make_token(char *e) {
 
 				switch(rules[i].token_type) {
 					case NOTYPE: break;
-					// default: panic("please implement me");
-					case '+': case '-': case '*': case '/':  case '(': case ')': case DECNUM:
-						strncpy(tokens[nr_token].str, substr_start, substr_len);
+					default:
 						tokens[nr_token].type = rules[i].token_type;
-						nr_token++;
-						break;
-					default: break;
+						tokens[nr_token].priority = rules[i].priority;
+						strncpy(tokens[nr_token].str, substr_start, substr_len);
+						tokens[nr_token].str[substr_len] = '\0';
+					// default: panic("please implement me");	
 				}
 				break;
 			}
-		}
-		if (nr_token > 32) {
-			printf("Memory limit exceeded!\n");
-			return false;
 		}
 		if(i == NR_REGEX) {
 			printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
@@ -108,6 +105,24 @@ static bool make_token(char *e) {
 	}
 
 	return true; 
+}
+
+bool check_parentheses(int l, int r) {
+	int i;
+	if (tokens[l].type == '(' && tokens[r].type == ')') {
+		int lc = 0, rc = 0;
+		for (i = l + 1; l < r; i++) {
+			if (tokens[i].type == '(')
+				lc++;
+			if (tokens[i].type == ')')
+				rc++;
+			if (lc < rc)
+				return false;
+		}
+		if (lc == rc)
+			return true;
+	}
+	return false;
 }
 
 uint32_t expr(char *e, bool *success) {
