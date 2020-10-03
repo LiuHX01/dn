@@ -123,24 +123,6 @@ static bool make_token(char *e) {
 
 	return true; 
 }
-/**
-bool check_parentheses(int l, int r) {
-	int i;
-	if (tokens[l].type == '(' && tokens[r].type == ')') {
-		int lc = 0, rc = 0;
-		for (i = l + 1; l < r; i++) {
-			if (tokens[i].type == '(')
-				lc++;
-			if (tokens[i].type == ')')
-				rc++;
-			if (lc < rc)
-				return false;
-		}
-		if (lc == rc)
-			return true;
-	}
-	return false;
-}*/
 
 bool check_parentheses (int l,int r)
 {
@@ -198,7 +180,7 @@ uint32_t eval(int l, int r) {
 		return 0;
 	}
 	
-	if (l == r) {
+	else if (l == r) {
 		uint32_t num = 0;
 		if (tokens[l].type == DECNUM)
 			sscanf(tokens[l].str, "%d", &num);
@@ -246,7 +228,7 @@ uint32_t eval(int l, int r) {
 	
 	else { // l < r
 		int op = dominant_operator(l, r);
-		printf("op=%d\n", op);
+		// printf("op=%d\n", op);
 		if (tokens[op].type == '!' || l == op || tokens[op].type == NEGATIVE || tokens[op].type == DEREFERENCE) {
 			uint32_t val0 = eval(l+1, r);
 			switch (tokens[l].type) {
@@ -259,7 +241,7 @@ uint32_t eval(int l, int r) {
 		//printf("op=%d\n", op);
 		uint32_t val1 = eval(l, op-1);
 		uint32_t val2 = eval(op+1, r);
-		printf("v1=%d, v2=%d\n", val1, val2);
+		// printf("v1=%d, v2=%d\n", val1, val2);
 		switch (tokens[op].type) {
 			case '+': return val1 + val2;
 			case '-': return val1 - val2;
@@ -296,7 +278,7 @@ uint32_t expr(char *e, bool *success) {
 
 	}
 	*success = true;
-	printf("nr=%d\n", nr_token);
+	//printf("nr=%d\n", nr_token);
 	return eval(0, nr_token-1);
 
 	/* TODO: Insert codes to evaluate the expression. */
