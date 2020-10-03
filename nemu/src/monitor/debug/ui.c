@@ -77,7 +77,7 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_p(char *args) {
-	int num;
+	unsigned int num;
 	bool success;
 	num = expr(args, &success);
 	if (success == true) 
