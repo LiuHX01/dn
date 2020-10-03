@@ -159,7 +159,7 @@ bool check_parentheses (int l,int r)
 	return false;
 }
 
-/**
+
 int dominant_operator(int l, int r) {
 	int op = 1;
 	int i, j;
@@ -187,8 +187,8 @@ int dominant_operator(int l, int r) {
 	}
 	//printf("%d\n", op);
 	return op;
-}*/
-
+}
+/**
 int dominant_operator (int l,int r)
 {
 	int i,j;
@@ -211,7 +211,7 @@ int dominant_operator (int l,int r)
  	}
 	return oper;
 }
-
+*/
 /**
 uint32_t eval(int l, int r) {
 	//printf("l=%d,r=%d\n", l, r);
