@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, DECNUM
+	NOTYPE = 256, EQ, DECNUM, REGISTER, HEXNUM, AND, OR, NEQ
 
 	/* TODO: Add more token types */
 
@@ -23,6 +23,7 @@ static struct rule {
 	 * Pay attention to the precedence level of different rules.
 	 */
 
+	// the higher the weight , the higher the priority.
 	{" +",	NOTYPE, 0},					// spaces
 	{"\\+", '+', 4},					// plus
 	{"==", EQ, 3},						// equal
@@ -31,7 +32,13 @@ static struct rule {
 	{"/", '/', 5},						// division
 	{"\\(", '(', 7},					// left bracket
 	{"\\)", ')', 7},					// right bracket
-	{"[0-9]+", DECNUM, 0}			// Decimal
+	{"[0-9]+", DECNUM, 0},				// Decimal
+	{"\\0x[0-9a-fA-F]+", HEXNUM, 0},	// Hexadecimal
+	{"\\$[a-z]+", REGISTER, 0},			// register
+	{"&&", AND, 2},						// and
+	{"\\|\\|", OR, 1},					// or
+	{"!=", NEQ, 3},						// not equal
+	{"!", '!', 6},						// not
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -76,6 +83,7 @@ static bool make_token(char *e) {
 		for(i = 0; i < NR_REGEX; i ++) {
 			if(regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
 				char *substr_start = e + position;
+				char *substr_start_register = e + position + 1;
 				int substr_len = pmatch.rm_eo;
 
 				Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
@@ -88,6 +96,12 @@ static bool make_token(char *e) {
 
 				switch(rules[i].token_type) {
 					case NOTYPE: break;
+					case REGISTER: // neglect $
+						tokens[nr_token].type = rules[i].token_type;
+						tokens[nr_token].priority = rules[i].priority;
+						strncpy(tokens[nr_token].str, substr_start_register, substr_len-1);
+						tokens[nr_token].str[substr_len-1] = '\0';
+						nr_token++;
 					default:
 						tokens[nr_token].type = rules[i].token_type;
 						tokens[nr_token].priority = rules[i].priority;
@@ -168,6 +182,40 @@ unsigned int eval(int l, int r) {
 		int num = 0;
 		if (tokens[l].type == DECNUM)
 			sscanf(tokens[l].str, "%d", &num);
+		else if (tokens[l].type == HEXNUM)
+			sscanf(tokens[l].str, "%x", &num);
+		else if (tokens[l].type == REGISTER) {
+			if (strlen(tokens[l].str) == 3) { // 32-bit
+				int i;
+				for (i = 0; i < 8; i++) { // check and find register name
+					if (strcmp(tokens[l].str, regsl[i]) == 0)
+						break;
+				}
+				if (i == 8 && strcmp(tokens[i].str, "eip") == 0)
+					num = cpu.eip;
+				else if (i == 8 && strcmp(tokens[i].str, "eip") != 0)
+					Assert(1,"illegal register name.\n");
+				else
+					num = reg_l(i);
+			}
+			else if (strlen(tokens[l].str) == 2) { // 16-bit
+				int i;
+				for (i = 0; i < 8; i++) {
+					if (strcmp(tokens[l].str, regsw[i]) == 0)
+						break;
+				}
+				num = reg_w(i);
+			}
+			else if (strlen(tokens[l].str) == 1) { // 8-bit
+				int i;
+				for (i = 0; i < 8; i++) {
+					if (strcmp(tokens[l].str, regsb[i]) == 0)
+						break;
+				}
+				num = reg_b(i);
+			}
+			else Assert(2, "no register found.\n");
+		}
 		return num;
 	}
 	
@@ -177,6 +225,14 @@ unsigned int eval(int l, int r) {
 	
 	else {
 		int op = dominant_operator(l, r);
+
+		if (tokens[op].type == '!' || l == op) {
+			int val0 = eval(l+1, r);
+			switch (tokens[l].type) {
+				case '!': return !val0;
+				default: Assert(3, "default because no val0.\n");
+			}
+		}
 		//printf("zzz%d\n", op);
 		int val1 = eval(l, op-1);
 		int val2 = eval(op+1, r);
@@ -186,6 +242,10 @@ unsigned int eval(int l, int r) {
 			case '-': return val1 - val2;
 			case '*': return val1 * val2;
 			case '/': return val1 / val2;
+			case EQ: return val1 == val2;
+			case NEQ: return val1 != val2;
+			case AND: return val1 && val2;
+			case OR: return val1 || val2;
 			default: break;
 		}
 	}
