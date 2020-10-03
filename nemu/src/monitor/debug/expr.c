@@ -130,13 +130,17 @@ bool check_parentheses (int l,int r)
 	if (tokens[l].type == '(' && tokens[r].type ==')')
 	{
 		int lc = 0, rc = 0;
-		for (i = l + 1; i < r; i ++)
+		for (i = l + 1; i < r; i++)
 		{
-			if (tokens[i].type == '(')lc ++;
-			if (tokens[i].type == ')')rc ++;
-			if (rc > lc)return false;	
+			if (tokens[i].type == '(')
+				lc++;
+			if (tokens[i].type == ')')
+				rc++;
+			if (rc > lc)
+				return false;	
 		}
-		if (lc == rc)return true;
+		if (lc == rc)
+			return true;
 	}
 	return false;
 }
