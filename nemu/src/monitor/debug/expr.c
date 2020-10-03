@@ -32,7 +32,7 @@ static struct rule {
 	{"/", '/', 5},						// division
 	{"\\(", '(', 7},					// left bracket
 	{"\\)", ')', 7},					// right bracket
-	{"\\b[0-9]+\\b", DECNUM, 0},				// Decimal
+	{"\\b[0-9]+\\b", DECNUM, 0},		// Decimal
 	{"\\0x[0-9a-fA-F]+", HEXNUM, 0},	// Hexadecimal
 	{"\\$[a-z]+", REGISTER, 0},			// register
 	{"&&", AND, 2},						// and
@@ -170,7 +170,7 @@ int dominant_operator(int l, int r) {
 	//printf("%d\n", op);
 	return op;
 }
-
+/**
 uint32_t eval(int l, int r) {
 	//printf("l=%d,r=%d\n", l, r);
 	if (l > r) {
@@ -255,6 +255,101 @@ uint32_t eval(int l, int r) {
 	}
 
 	return 0;
+}
+*/
+
+uint32_t eval(int l,int r) {
+	if (l > r){Assert (l>r,"something happened!\n");return 0;}
+	if (l == r) {
+	uint32_t num = 0;
+	if (tokens[l].type == DECNUM)
+		sscanf(tokens[l].str,"%d",&num);
+	if (tokens[l].type == HEXNUM)
+		sscanf(tokens[l].str,"%x",&num);
+	if (tokens[l].type == REGISTER)
+		{
+			if (strlen (tokens[l].str) == 3) {
+			int i;
+			for (i = R_EAX; i <= R_EDI; i ++)
+				if (strcmp (tokens[l].str,regsl[i]) == 0)break;
+				if (i > R_EDI)
+				if (strcmp (tokens[l].str,"eip") == 0)
+					num = cpu.eip;
+				else Assert (1,"no this register!\n");
+			else num = reg_l(i);
+ 			}
+ 			else if (strlen (tokens[l].str) == 2) {
+ 			if (tokens[l].str[1] == 'x' || tokens[l].str[1] == 'p' || tokens[l].str[1] == 'i') {
+				int i;
+				for (i = R_AX; i <= R_DI; i ++)
+					if (strcmp (tokens[l].str,regsw[i]) == 0)break;
+				num = reg_w(i);
+			}
+ 			else if (tokens[l].str[1] == 'l' || tokens[l].str[1] == 'h') {
+				int i;
+				for (i = R_AL; i <= R_BH; i ++)
+					if (strcmp (tokens[l].str,regsb[i]) == 0)break;
+				num = reg_b(i);
+			}
+			else assert (1);
+			}
+		}/*
+	if (tokens[l].type == MARK)
+	{
+		int i;
+		for (i=0;i<nr_symtab_entry;i++)
+		{
+			if ((symtab[i].st_info&0xf) == STT_OBJECT)
+			{
+				char tmp [max_string_long];
+				int tmplen = symtab[i+1].st_name - symtab[i].st_name - 1;
+				strncpy (tmp,strtab+symtab[i].st_name,tmplen);
+				tmp [tmplen] = '\0';
+				if (strcmp (tmp,token[l].str) == 0)
+				{
+					num = symtab[i].st_value;
+				}
+			}
+		}
+	}*/
+		return num;
+	}
+	else if (check_parentheses (l,r) == true)return eval (l + 1,r - 1);
+ 	else {
+		int op = dominant_operator (l,r);
+//		printf ("op = %d\n",op);
+ 		if (l == op || tokens[op].type == DEREFERENCE || tokens[op].type == NEGATIVE || tokens[op].type == '!')
+		{
+			uint32_t val = eval (l + 1,r);
+//			printf ("val = %d\n",val);
+			switch (tokens[l].type)
+ 			{
+				//case POINTOR:current_sreg = R_DS;return swaddr_read (val,4);
+				case NEGATIVE:return -val;
+				case '!':return !val;
+				default :Assert (1,"default\n");
+			} 
+		}
+
+		uint32_t val1 = eval (l,op - 1);
+		uint32_t val2 = eval (op + 1,r);
+//		printf ("1 = %d,2 = %d\n",val1,val2);
+		switch (tokens[op].type)
+		{
+			case '+':return val1 + val2;
+			case '-':return val1 - val2;
+			case '*':return val1 * val2;
+			case '/':return val1 / val2;
+			case EQ:return val1 == val2;
+			case NEQ:return val1 != val2;
+			case AND:return val1 && val2;
+			case OR:return val1 || val2;
+			default:
+			break;
+  		}
+  	}
+	assert (1);
+	return -123456;
 }
 
 uint32_t expr(char *e, bool *success) {
