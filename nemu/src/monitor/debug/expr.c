@@ -174,8 +174,8 @@ int dominant_operator(int l, int r) {
 
 unsigned int eval(int l, int r) {
 	if (l > r) {
-		//printf("%d, %d\n", l, r);
-		printf("Wrong! because l > r.\n");
+		printf("l=%d,r=%d\n", l, r);
+		Assert(5, "wrong because l > r.\n");
 		return 0;
 	}
 	
