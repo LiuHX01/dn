@@ -94,6 +94,7 @@ static bool make_token(char *e) {
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 						tokens[nr_token].str[substr_len] = '\0';
 						nr_token++;
+						printf("%d\n", nr_token);
 					// default: panic("please implement me");	
 				}
 				break;
@@ -157,7 +158,7 @@ int dominant_operator(int l, int r) {
 
 unsigned int eval(int l, int r) {
 	if (l > r) {
-		printf("%d, %d\n", l, r);
+		//printf("%d, %d\n", l, r);
 		printf("Wrong! because l > r\n");
 		return 0;
 	}
