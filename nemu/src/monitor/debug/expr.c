@@ -32,7 +32,7 @@ static struct rule {
 	{"/", '/', 5},						// division
 	{"\\(", '(', 7},					// left bracket
 	{"\\)", ')', 7},					// right bracket
-	{"[0-9]+", DECNUM, 0},				// Decimal
+	{"\\b[0-9]+\\b", DECNUM, 0},				// Decimal
 	{"\\0x[0-9a-fA-F]+", HEXNUM, 0},	// Hexadecimal
 	{"\\$[a-z]+", REGISTER, 0},			// register
 	{"&&", AND, 2},						// and
