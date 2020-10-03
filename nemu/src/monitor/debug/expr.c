@@ -179,7 +179,7 @@ uint32_t eval(int l, int r) {
 		return 0;
 	}
 	
-	else if (l == r) {
+	if (l == r) {
 		uint32_t num = 0;
 		if (tokens[l].type == DECNUM)
 			sscanf(tokens[l].str, "%d", &num);
