@@ -153,7 +153,7 @@ int dominant_operator(int l, int r) {
 			op = i;
 		}
 	}
-	printf("%d\n", op);
+	//printf("%d\n", op);
 	return op;
 }
 
