@@ -187,6 +187,7 @@ unsigned int eval(int l, int r) {
 		else if (tokens[l].type == REGISTER) {
 			if (strlen(tokens[l].str) == 3) { // 32-bit
 				int i;
+				printf("%s\n", tokens[l].str);
 				for (i = 0; i < 8; i++) { // check and find register name
 					if (strcmp(tokens[l].str, regsl[i]) == 0)
 						break;
@@ -263,12 +264,12 @@ uint32_t expr(char *e, bool *success) {
 	int i;
 	for (i = 0; i < nr_token; i++) {
 		if (tokens[i].type == '*')
-			if (i == 0 || (tokens[i].type != DECNUM && tokens[i].type != HEXNUM && tokens[i].type != REGISTER && tokens[i].type != ')')) {
+			if (i == 0 || (tokens[i-1].type != DECNUM && tokens[i-1].type != HEXNUM && tokens[i-1].type != REGISTER && tokens[i-1].type != ')')) {
 				tokens[i].type = DEREFERENCE;
 				tokens[i].priority = 6;
 			}
 		if (tokens[i].type == '-')
-			if (i == 0 || (tokens[i].type != DECNUM && tokens[i].type != HEXNUM && tokens[i].type != REGISTER && tokens[i].type != ')')) {
+			if (i == 0 || (tokens[i-1].type != DECNUM && tokens[i-1].type != HEXNUM && tokens[i-1].type != REGISTER && tokens[i-1].type != ')')) {
 				tokens[i].type = NEGATIVE;
 				tokens[i].priority = 6;
 			}
