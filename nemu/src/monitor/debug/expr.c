@@ -250,10 +250,10 @@ uint32_t eval(int l, int r) {
 			case NEQ: return val1 != val2;
 			case AND: return val1 && val2;
 			case OR: return val1 || val2;
-			default: assert(0);
+			default: break;
 		}
 	}
-	assert(1);
+
 	return 0;
 }
 
