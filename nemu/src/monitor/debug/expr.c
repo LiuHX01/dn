@@ -254,7 +254,7 @@ unsigned int eval(int l, int r) {
 		}
 	}
 	assert(1);
-	return 666;
+	return -666;
 }
 
 uint32_t expr(char *e, bool *success) {
