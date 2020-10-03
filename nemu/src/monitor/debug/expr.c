@@ -125,14 +125,79 @@ bool check_parentheses(int l, int r) {
 	return false;
 }
 
+int dominant_operator(int l, int r) {
+	int op = 1;
+	int i, j;
+	int minn = 20;
+	for (i = l; i <= r; i++) {
+		if (tokens[i].type == DECNUM) 
+			continue;
+		int bnum = 0, k = 1;
+		for (j = i - 1; j >= l; j--) { // right to left
+			if (tokens[j].type == '(') {
+				if (bnum == 0) { // check legality of brackets 
+					k = 0;
+					break;
+				}
+				else bnum--;
+			}
+			if (tokens[j].type == ')')
+				bnum++;
+		}
+		if (k == 0)
+			continue;
+		if (tokens[i].priority <= minn) { // find the minimum weight
+			minn = tokens[i].priority;
+			op = i;
+		}
+	}
+	return op;
+}
+
+unsigned int eval(int l, int r) {
+	if (l > r) {
+		printf("Wrong!");
+		return 0;
+	}
+	
+	else if (l == r) {
+		int num = 0;
+		if (tokens[l].type == DECNUM)
+			sscanf(tokens[l].str, "%d", &num);
+		return num;
+	}
+	
+	else if (check_parentheses(l, r) == true) {
+		return eval(l+1, r-1);
+	}
+	
+	else {
+		int op = dominant_operator(l, r);
+		int val1 = eval(l, op-1);
+		int val2 = eval(op+1, r);
+		switch (tokens[op].type) {
+			case '+': return val1 + val2;
+			case '-': return val1 - val2;
+			case '*': return val1 * val2;
+			case '/': return val1 / val2;
+			default: break;
+		}
+	}
+	assert(1);
+	return 2;
+}
+
 uint32_t expr(char *e, bool *success) {
 	if(!make_token(e)) {
 		*success = false;
 		return 0;
 	}
 
+	*success = true;
+	return eval(0, nr_token-1);
+
 	/* TODO: Insert codes to evaluate the expression. */
-	panic("please implement me");
-	return 0;
+	//panic("please implement me");
+	//return 0;
 }
 
