@@ -177,6 +177,7 @@ unsigned int eval(int l, int r) {
 	
 	else {
 		int op = dominant_operator(l, r);
+		printf("zzz%d\n", op);
 		int val1 = eval(l, op-1);
 		int val2 = eval(op+1, r);
 		switch (tokens[op].type) {
@@ -188,7 +189,7 @@ unsigned int eval(int l, int r) {
 		}
 	}
 	assert(1);
-	return 2;
+	return 666;
 }
 
 uint32_t expr(char *e, bool *success) {
