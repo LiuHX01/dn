@@ -174,12 +174,12 @@ int dominant_operator(int l, int r) {
 unsigned int eval(int l, int r) {
 	if (l > r) {
 		//printf("%d, %d\n", l, r);
-		printf("Wrong! because l > r\n");
+		printf("Wrong! because l > r.\n");
 		return 0;
 	}
 	
 	else if (l == r) {
-		int num = 0;
+		unsigned int num = 0;
 		if (tokens[l].type == DECNUM)
 			sscanf(tokens[l].str, "%d", &num);
 		else if (tokens[l].type == HEXNUM)
@@ -226,9 +226,11 @@ unsigned int eval(int l, int r) {
 	else {
 		int op = dominant_operator(l, r);
 
-		if (tokens[op].type == '!' || l == op) {
+		if (tokens[op].type == '!' || l == op || tokens[op].type == NEGATIVE || tokens[op].type == DEREFERENCE) {
 			int val0 = eval(l+1, r);
 			switch (tokens[l].type) {
+				case DEREFERENCE: return swaddr_read(val0, 4);
+				case NEGATIVE: return -val0;
 				case '!': return !val0;
 				default: Assert(3, "default because no val0.\n");
 			}
