@@ -141,7 +141,7 @@ bool check_parentheses(int l, int r) {
 	}
 	return false;
 }
-
+/**
 int dominant_operator(int l, int r) {
 	int op = 1;
 	int i, j;
@@ -169,7 +169,31 @@ int dominant_operator(int l, int r) {
 	}
 	//printf("%d\n", op);
 	return op;
+}*/
+
+int dominant_operator (int l,int r)
+{
+	int i,j;
+	int min_priority = 10;
+	int oper = l;
+	for (i = l; i <= r;i ++)
+	{
+		if (tokens[i].type == DECNUM || tokens[i].type == HEXNUM || tokens[i].type == REGISTER )
+			continue;
+		int cnt = 0;
+		bool key = true;
+		for (j = i - 1; j >= l ;j --)
+		{ 
+			if (tokens[j].type == '(' && !cnt){key = false;break;}
+			if (tokens[j].type == '(')cnt --;
+			if (tokens[j].type == ')')cnt ++; 
+		}
+		if (!key)continue;
+		if (tokens[i].priority <= min_priority){min_priority = tokens[i].priority;oper = i;}
+ 	}
+	return oper;
 }
+
 /**
 uint32_t eval(int l, int r) {
 	//printf("l=%d,r=%d\n", l, r);
