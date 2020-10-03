@@ -260,7 +260,20 @@ uint32_t expr(char *e, bool *success) {
 		*success = false;
 		return 0;
 	}
+	int i;
+	for (i = 0; i < nr_token; i++) {
+		if (tokens[i].type == '*')
+			if (i == 0 || (tokens[i].type != DECNUM && tokens[i].type != HEXNUM && tokens[i].type != REGISTER && tokens[i].type != ')')) {
+				tokens[i].type = DEREFERENCE;
+				tokens[i].priority = 6;
+			}
+		if (tokens[i].type == '-')
+			if (i == 0 || (tokens[i].type != DECNUM && tokens[i].type != HEXNUM && tokens[i].type != REGISTER && tokens[i].type != ')')) {
+				tokens[i].type = NEGATIVE;
+				tokens[i].priority = 6;
+			}
 
+	}
 	*success = true;
 	return eval(0, nr_token-1);
 
