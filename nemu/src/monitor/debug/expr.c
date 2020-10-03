@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, DECNUM, REGISTER, HEXNUM, AND, OR, NEQ
+	NOTYPE = 256, EQ, DECNUM, REGISTER, HEXNUM, AND, OR, NEQ, NEGATIVE, DEREFERENCE
 
 	/* TODO: Add more token types */
 
@@ -144,14 +144,14 @@ bool check_parentheses(int l, int r) {
 int dominant_operator(int l, int r) {
 	int op = 1;
 	int i, j;
-	int minn = 20;
+	int minn = 100;
 	for (i = l; i <= r; i++) {
-		if (tokens[i].type == DECNUM) 
+		if (tokens[i].type == DECNUM || tokens[i].type == HEXNUM || tokens[i].type == REGISTER) 
 			continue;
 		int bnum = 0, k = 1;
 		for (j = i - 1; j >= l; j--) { // right to left
 			if (tokens[j].type == '(') {
-				if (bnum == 0) { // check legality of brackets 
+				if (!bnum) { // check legality of brackets 
 					k = 0;
 					break;
 				}
@@ -160,7 +160,7 @@ int dominant_operator(int l, int r) {
 			if (tokens[j].type == ')')
 				bnum++;
 		}
-		if (k == 0)
+		if (!k)
 			continue;
 		if (tokens[i].priority <= minn) { // find the minimum weight
 			minn = tokens[i].priority;
