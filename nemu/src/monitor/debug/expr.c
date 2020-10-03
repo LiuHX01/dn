@@ -151,13 +151,12 @@ int dominant_operator(int l, int r) {
 			continue;
 		int bnum = 0, k = 1;
 		for (j = i - 1; j >= l; j--) { // right to left
-			if (tokens[j].type == '(') {
-				if (!bnum) { // check legality of brackets 
-					k = 0;
-					break;
-				}
-				else bnum--;
+			if (tokens[j].type == '(' && !bnum) {
+				k = 0;
+				break;
 			}
+			if (tokens[j].type == '(')
+				bnum--;
 			if (tokens[j].type == ')')
 				bnum++;
 		}
@@ -230,7 +229,7 @@ unsigned int eval(int l, int r) {
 		int op = dominant_operator(l, r);
 
 		if (tokens[op].type == '!' || l == op || tokens[op].type == NEGATIVE || tokens[op].type == DEREFERENCE) {
-			int val0 = eval(l+1, r);
+			unsigned int val0 = eval(l+1, r);
 			switch (tokens[l].type) {
 				case DEREFERENCE: return swaddr_read(val0, 4);
 				case NEGATIVE: return -val0;
@@ -239,9 +238,9 @@ unsigned int eval(int l, int r) {
 			}
 		}
 		//printf("zzz%d\n", op);
-		int val1 = eval(l, op-1);
-		int val2 = eval(op+1, r);
-		//printf("v1=%d, v2=%d\n", val1, val2);
+		unsigned int val1 = eval(l, op-1);
+		unsigned int val2 = eval(op+1, r);
+		printf("v1=%d, v2=%d\n", val1, val2);
 		switch (tokens[op].type) {
 			case '+': return val1 + val2;
 			case '-': return val1 - val2;
