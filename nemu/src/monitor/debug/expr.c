@@ -31,7 +31,7 @@ static struct rule {
 	{"/", '/', 5},						// division
 	{"\\(", '(', 7},					// left bracket
 	{"\\)", ')', 7},					// right bracket
-	{"\\b[0-9]+\\b", DECNUM, 0}			// Decimal
+	{"[0-9]+", DECNUM, 0}			// Decimal
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -93,6 +93,7 @@ static bool make_token(char *e) {
 						tokens[nr_token].priority = rules[i].priority;
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 						tokens[nr_token].str[substr_len] = '\0';
+						nr_token++;
 					// default: panic("please implement me");	
 				}
 				break;
@@ -156,7 +157,7 @@ int dominant_operator(int l, int r) {
 
 unsigned int eval(int l, int r) {
 	if (l > r) {
-		printf("Wrong!");
+		printf("Wrong! because l > r");
 		return 0;
 	}
 	
