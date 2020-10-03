@@ -174,7 +174,7 @@ int dominant_operator(int l, int r) {
 
 unsigned int eval(int l, int r) {
 	if (l > r) {
-		printf("l=%d,r=%d\n", l, r);
+		//printf("l=%d,r=%d\n", l, r);
 		Assert(5, "wrong because l > r.\n");
 		return 0;
 	}
@@ -277,6 +277,7 @@ uint32_t expr(char *e, bool *success) {
 
 	}
 	*success = true;
+	printf("nr=%d\n", nr_token);
 	return eval(0, nr_token-1);
 
 	/* TODO: Insert codes to evaluate the expression. */
