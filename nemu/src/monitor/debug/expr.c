@@ -31,7 +31,7 @@ static struct rule {
 	{"/", '/', 5},						// division
 	{"\\(", '(', 7},					// left bracket
 	{"\\)", ')', 7},					// right bracket
-	{"[0-9]+", DECNUM, 0}				// Decimal
+	{"\\b[0-9]+\\b", DECNUM, 0}			// Decimal
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
