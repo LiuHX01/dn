@@ -187,7 +187,7 @@ unsigned int eval(int l, int r) {
 		else if (tokens[l].type == REGISTER) {
 			if (strlen(tokens[l].str) == 3) { // 32-bit
 				int i;
-				printf("%s\n", tokens[l].str);
+				//printf("%s\n", tokens[l].str);
 				for (i = 0; i < 8; i++) { // check and find register name
 					if (strcmp(tokens[l].str, regsl[i]) == 0)
 						break;
