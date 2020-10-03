@@ -172,7 +172,7 @@ int dominant_operator(int l, int r) {
 }
 
 unsigned int eval(int l, int r) {
-	//printf("l=%d,r=%d\n", l, r);
+	printf("l=%d,r=%d\n", l, r);
 	if (l > r) {
 		//printf("l=%d,r=%d\n", l, r);
 		Assert(5, "wrong because l > r.\n");
@@ -225,7 +225,7 @@ unsigned int eval(int l, int r) {
 		return eval(l+1, r-1);
 	}
 	
-	else {
+	else { // l < r
 		int op = dominant_operator(l, r);
 		printf("op=%d\n", op);
 		if (tokens[op].type == '!' || l == op || tokens[op].type == NEGATIVE || tokens[op].type == DEREFERENCE) {
