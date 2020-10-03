@@ -171,16 +171,16 @@ int dominant_operator(int l, int r) {
 	return op;
 }
 
-unsigned int eval(int l, int r) {
+uint32_t eval(int l, int r) {
 	//printf("l=%d,r=%d\n", l, r);
 	if (l > r) {
 		//printf("l=%d,r=%d\n", l, r);
-		Assert(5, "wrong because l > r.\n");
+		printf("wrong!!!\n");
 		return 0;
 	}
 	
 	else if (l == r) {
-		unsigned int num = 0;
+		uint32_t num = 0;
 		if (tokens[l].type == DECNUM)
 			sscanf(tokens[l].str, "%d", &num);
 		else if (tokens[l].type == HEXNUM)
@@ -229,7 +229,7 @@ unsigned int eval(int l, int r) {
 		int op = dominant_operator(l, r);
 		printf("op=%d\n", op);
 		if (tokens[op].type == '!' || l == op || tokens[op].type == NEGATIVE || tokens[op].type == DEREFERENCE) {
-			unsigned int val0 = eval(l+1, r);
+			uint32_t val0 = eval(l+1, r);
 			switch (tokens[l].type) {
 				case DEREFERENCE: return swaddr_read(val0, 4);
 				case NEGATIVE: return -val0;
@@ -237,9 +237,9 @@ unsigned int eval(int l, int r) {
 				default: Assert(3, "default because no val0.\n");
 			}
 		}
-		//printf("zzz%d\n", op);
-		unsigned int val1 = eval(l, op-1);
-		unsigned int val2 = eval(op+1, r);
+		//printf("op=%d\n", op);
+		uint32_t val1 = eval(l, op-1);
+		uint32_t val2 = eval(op+1, r);
 		printf("v1=%d, v2=%d\n", val1, val2);
 		switch (tokens[op].type) {
 			case '+': return val1 + val2;
