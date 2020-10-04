@@ -19,5 +19,66 @@ void init_wp_pool() {
 }
 
 /* TODO: Implement the functionality of watchpoint */
+WP* new_wp() {
+	WP *nwp, *tmp;
+	nwp = free_;
+	tmp = head;
 
+	nwp->next = NULL;
+	free_ = free_->next;
 
+	if (!tmp)
+		head = nwp;
+	else {
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = nwp;
+	} // link to last
+
+	return nwp;
+}
+
+void free_wp(WP *wp) {
+	WP *p, *q;
+	p = free_;
+	if (!p) {
+		free_ = wp;
+		p = free_; // p == free_ == wp
+	}
+	else {
+		while (p->next != NULL)
+			p = p->next;
+		p->next = wp;
+	}
+
+	q = head;
+	if (!q) 
+		assert(0);
+	if (head->NO == wp->NO)  // wp is the first node
+		head = head->next;
+	else {
+		while (q->next != NULL && q->next->NO != wp->NO)
+			q = q->next;
+		if (q->next->NO == wp->NO)
+			q->next = q->next->next;
+		else 
+			assert(0);
+	}
+
+	wp->next = NULL;
+}
+
+void delete_wp(int no) {
+	WP *q;
+	q = &wp_pool[no];
+	free_wp(q);
+}
+
+void print_wp() {
+	WP *p;
+	p = head;
+	while (p != NULL) {
+		printf("watchpoint %d: %s = %d\n", p->NO, p->exprname, p->value);
+		p = p->next;
+	}
+}

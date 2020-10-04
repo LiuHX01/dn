@@ -55,6 +55,10 @@ static int cmd_info(char *args) {
 			printf("%s %x %d\n", regsl[i], reg_l(i), reg_l(i));
 		}
 	}
+
+	if (strcmp(c, "w") == 0) {
+		print_wp();
+	}
 	return 0;
 }
 
@@ -91,6 +95,25 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
+static int cmd_d(char *args) {
+	int wp;
+	sscanf(args, "%d", &wp);
+	delete_wp(wp);
+	return 0;
+}
+
+static int cmd_w(char *args) {
+	WP *p;
+	bool success;
+	p = new_wp();
+	p->value = expr(args, &success);
+	strcpy(p->exprname, args);
+	if (success == false)
+		assert(1);
+	printf("Done,\nwatchpoint %d: %s\nvalue: %d\n", p->NO, p->exprname, p->value);
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -98,13 +121,15 @@ static struct {
 	char *description;
 	int (*handler) (char *);
 } cmd_table [] = {
-	{ "help", "Display informations about all supported commands", cmd_help },
-	{ "c", "Continue the execution of the program", cmd_c },
-	{ "q", "Exit NEMU", cmd_q },
-	{ "si", "Single-step", cmd_si},
-	{ "info", "Print registers information", cmd_info},
+	{ "help", "Display informations about all supported commands.", cmd_help },
+	{ "c", "Continue the execution of the program.", cmd_c },
+	{ "q", "Exit NEMU.", cmd_q },
+	{ "si", "Single-step.", cmd_si},
+	{ "info", "Print registers information or print watchpoints.", cmd_info},
 	{ "x", "Scan memory.", cmd_x},
-	{ "p", "Expression evaluation.", cmd_p}
+	{ "p", "Expression evaluation.", cmd_p},
+	{ "d", "Delete watchpoint.", cmd_d},
+	{ "w", "Set watchpoint.", cmd_w}
 	/* TODO: Add more commands */
 
 };
