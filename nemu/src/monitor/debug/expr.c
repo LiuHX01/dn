@@ -16,7 +16,7 @@ enum {
 static struct rule {
 	char *regex;
 	int token_type;
-	int priority; // the precedence level of rules
+	int weight; // the precedence level of rules
 } rules[] = {
 
 	/* TODO: Add more rules.
@@ -65,7 +65,7 @@ void init_regex() {
 typedef struct token {
 	int type;
 	char str[32];
-	int priority;
+	int weight;
 } Token;
 
 Token tokens[32];
@@ -98,14 +98,14 @@ static bool make_token(char *e) {
 					case NOTYPE: break;
 					case REGISTER: // neglect $
 						tokens[nr_token].type = rules[i].token_type;
-						tokens[nr_token].priority = rules[i].priority;
+						tokens[nr_token].weight = rules[i].weight;
 						strncpy(tokens[nr_token].str, substr_start_register, substr_len-1);
 						tokens[nr_token].str[substr_len-1] = '\0';
 						nr_token++;
 						break;
 					default:
 						tokens[nr_token].type = rules[i].token_type;
-						tokens[nr_token].priority = rules[i].priority;
+						tokens[nr_token].weight = rules[i].weight;
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 						tokens[nr_token].str[substr_len] = '\0';
 						nr_token++;
@@ -166,8 +166,8 @@ int dominant_operator(int l, int r) {
 		}
 		if (!k)
 			continue;
-		if (tokens[i].priority <= minn) { // find the minimum weight
-			minn = tokens[i].priority;
+		if (tokens[i].weight <= minn) { // find the minimum weight
+			minn = tokens[i].weight;
 			op = i;
 		}
 	}
@@ -272,12 +272,12 @@ uint32_t expr(char *e, bool *success) {
 		if (tokens[i].type == '*')
 			if (i == 0 || (tokens[i-1].type != DECNUM && tokens[i-1].type != HEXNUM && tokens[i-1].type != REGISTER && tokens[i-1].type != ')')) {
 				tokens[i].type = DEREFERENCE;
-				tokens[i].priority = 6;
+				tokens[i].weight = 6;
 			}
 		if (tokens[i].type == '-')
 			if (i == 0 || (tokens[i-1].type != DECNUM && tokens[i-1].type != HEXNUM && tokens[i-1].type != REGISTER && tokens[i-1].type != ')')) {
 				tokens[i].type = NEGATIVE;
-				tokens[i].priority = 6;
+				tokens[i].weight = 6;
 			}
 
 	}
