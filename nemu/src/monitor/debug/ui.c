@@ -74,9 +74,11 @@ static int cmd_x(char *args) {
 	for (i = 0; i < len; i++) {
 		//printf("---0x%x: ", addr);
 		int j;
-		for (j = 4; j > 0; j--)
-			printf("%02x\n",swaddr_read(addr,1));
-		addr += 4;
+		for (j = 4; j > 0; j--) {	
+			printf("%02x\t",swaddr_read(addr,1));
+			addr += 1;
+		}
+		printf("\n");
 	}
 	printf("\n");
 	return 0;
