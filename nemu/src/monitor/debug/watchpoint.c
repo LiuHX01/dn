@@ -27,8 +27,10 @@ WP* new_wp() {
 	nwp->next = NULL;
 	free_ = free_->next;
 
-	if (!tmp)
+	if (!tmp) {
 		head = nwp;
+		tmp = head;
+	}
 	else {
 		while (tmp->next != NULL)
 			tmp = tmp->next;
@@ -41,7 +43,7 @@ WP* new_wp() {
 void free_wp(WP *wp) {
 	WP *p, *q;
 	p = free_;
-	if (!p) {
+	if (p == NULL) {
 		free_ = wp;
 		p = free_; // p == free_ == wp
 	}
@@ -52,14 +54,16 @@ void free_wp(WP *wp) {
 	}
 
 	q = head;
-	if (!q) 
+	if (q == NULL) 
 		assert(0);
 	if (head->NO == wp->NO)  // wp is the first node
 		head = head->next;
 	else {
 		while (q->next != NULL && q->next->NO != wp->NO)
 			q = q->next;
-		if (q->next->NO == wp->NO)
+		if (q->next == NULL && q->NO == wp->NO)
+			printf("wrong!\n");
+		else if (q->next->NO == wp->NO)
 			q->next = q->next->next;
 		else 
 			assert(0);
@@ -74,7 +78,7 @@ void delete_wp(int no) {
 	WP *q;
 	q = &wp_pool[no];
 	free_wp(q);
-	printf("delete watchpoint Done.");
+	printf("delete watchpoint Done.\n");
 }
 
 void print_wp() {
