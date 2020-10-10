@@ -63,7 +63,7 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-	char *LEN = strtok(NULL, " ");
+	char *LEN = strtok(args, " ");
 	char *ADDR = strtok(NULL, " ");
 	int len, i, addr;
 	sscanf(LEN,"%d",&len);

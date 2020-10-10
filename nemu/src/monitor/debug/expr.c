@@ -236,7 +236,7 @@ uint32_t eval(int l, int r) {
 		if (tokens[op].type == '!' || l == op || tokens[op].type == NEGATIVE || tokens[op].type == DEREFERENCE) {
 			uint32_t val0 = eval(l+1, r);
 			switch (tokens[l].type) {
-				case DEREFERENCE: return swaddr_read(val0, 4);
+				case DEREFERENCE:  return swaddr_read(val0, 4);
 				case NEGATIVE: return -val0;
 				case '!': return !val0;
 				default: Assert(3, "default because no val0.\n");
