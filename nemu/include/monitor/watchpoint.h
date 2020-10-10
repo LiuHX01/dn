@@ -5,9 +5,9 @@
 
 typedef struct watchpoint {
 	int NO;
-	struct watchpoint *next;
 	char exprname[32];
-	int value;
+	unsigned int value;
+	struct watchpoint *next;
 	/* TODO: Add more members if necessary */
 
 

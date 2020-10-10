@@ -114,7 +114,7 @@ static int cmd_w(char *args) {
 	strcpy(p->exprname, args);
 	if (success == false)
 		assert(1);
-	printf("Done,\nwatchpoint %d: %s\nvalue: %d\n", p->NO, p->exprname, p->value);
+	printf("Dotne,\nwatchpoint %d: %s\nvalue: %d\n", p->NO, p->exprname, p->value);
 	return 0;
 }
 
