@@ -36,7 +36,7 @@ WP* new_wp()
 			p=p->next;
 		p->next = fr;
 	}
-	return f;
+	return fr;
 }
 
 void free_wp(WP *wp) {
