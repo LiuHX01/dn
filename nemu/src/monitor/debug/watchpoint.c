@@ -22,16 +22,19 @@ void init_wp_pool() {
 
 WP* new_wp()
 {
-	WP *f,*p;
-	f = free_;
+	WP *fr,*p;
+	fr = free_;
 	free_ = free_->next;
-	f->next = NULL;
+	fr->next = NULL;
 	p = head;
-	if (p == NULL){head = f;p = head;}
+	if (p == NULL) {
+		head = fr;
+		p = head;
+	}
 	else {
 		while (p->next!=NULL)
 			p=p->next;
-		p->next = f;
+		p->next = fr;
 	}
 	return f;
 }
