@@ -66,12 +66,15 @@ void free_wp(WP *wp) {
 	}
 
 	wp->next = NULL;
+	wp->value = 0;
+	wp->exprname[0] = '\0';
 }
 
 void delete_wp(int no) {
 	WP *q;
 	q = &wp_pool[no];
 	free_wp(q);
+	printf("delete watchpoint Done.");
 }
 
 void print_wp() {
